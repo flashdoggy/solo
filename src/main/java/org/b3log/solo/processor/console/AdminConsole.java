@@ -272,6 +272,8 @@ public class AdminConsole {
         final String dbURL = Latkes.getLocalProperty("jdbc.URL");
         String sql; // exported SQL script
 
+        System.out.println("==================The current runtimeDatabase is: " + runtimeDatabase + "====================");
+
         if (Latkes.RuntimeDatabase.MYSQL == runtimeDatabase) {
             String db = StringUtils.substringAfterLast(dbURL, "/");
             db = StringUtils.substringBefore(db, "?");

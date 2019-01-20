@@ -17,25 +17,24 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 -->
-<footer class="footer wrapper fn__clear">
-    &copy; ${year}
-    ${footerContent}
-    <a href="${servePath}">${blogTitle}</a>  <span class="fn__none--m">&nbsp; • &nbsp;</span>
-    <div class="fn__none"></div>
-    <a href="https://solo.b3log.org" target="_blank">Solo</a> ${version}
-
-    <div class="fn__right">
-        Powered by <a href="https://b3log.org" target="_blank">B3log</a> 开源
-        <div class="fn__none"></div>
-        &nbsp; &heartsuit;  &nbsp;
-        Theme <a rel="friend" href="https://github.com/b3log/solo-skins" target="_blank">next</a> by <a href="http://vanessa.b3log.org" target="_blank">Vanessa</a>
+<footer class="footer">
+    <div class="wrapper fn-clear">
+        <a href="${servePath}">${blogTitle}</a>  •
+        ${onlineVisitor1Label}${onlineVisitorCnt} <br/>
+        &copy; ${year}
+        ${footerContent}
+        Powered by <a href="https://b3log.org" target="_blank">B3log 开源</a> •
+        <a href="https://solo.b3log.org" target="_blank">Solo</a> ${version}
+        
+        <div class="fn-right">Theme <a rel="friend" href="https://github.com/b3log/solo-skins" target="_blank">next</a>
+            by <a href="http://iissnan.com/" target="_blank">IIssNan</a> & <a href="http://vanessa.b3log.org" target="_blank">Vanessa</a>.</div>
     </div>
 </footer>
-<div class="icon-up" onclick="Util.goTop()"></div>
+<div class="back-to-top" onclick="Util.goTop()"></div>
 
-<script type="text/javascript" src="${staticServePath}/js/lib/compress/pjax.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="${staticServePath}/js/lib/jquery/jquery.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="${staticServePath}/js/common${miniPostfix}.js?${staticResourceVersion}" charset="utf-8"></script>
-<script type="text/javascript" src="${staticServePath}/skins/${skinDirName}/js/common${miniPostfix}.js?${staticResourceVersion}" charset="utf-8"></script>
+<script type="text/javascript" src="${staticServePath}/skins/${skinDirName}/js/${skinDirName}${miniPostfix}.js?${staticResourceVersion}" charset="utf-8"></script>
 <script type="text/javascript">
     var latkeConfig = {
         "servePath": "${servePath}",
@@ -45,6 +44,7 @@
     };
 
     var Label = {
+        "markedAvailable": ${markedAvailable?c},
         "skinDirName": "${skinDirName}",
         "em00Label": "${em00Label}",
         "em01Label": "${em01Label}",
@@ -60,10 +60,12 @@
         "em11Label": "${em11Label}",
         "em12Label": "${em12Label}",
         "em13Label": "${em13Label}",
-        "em14Label": "${em14Label}"
+        "em14Label": "${em14Label}",
+        "tocLabel": "${tocLabel}",
+        "siteViewLabel": "${siteViewLabel}"
     };
-
-    Util.parseMarkdown('content-reset');
-    Util.killIE(8)
+    Util.initSW();
+    Util.parseMarkdown();
+    Util.killIE(8);
 </script>
 ${plugins}
