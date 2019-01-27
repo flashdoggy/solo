@@ -32,6 +32,7 @@ import org.b3log.solo.model.Common;
 import org.b3log.solo.service.DataModelService;
 import org.b3log.solo.service.PreferenceQueryService;
 import org.b3log.solo.service.UserQueryService;
+import org.b3log.solo.util.Solos;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ import java.util.Map;
  * Error processor.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.1.5, Nov 28, 2018
+ * @version 1.0.1.7, Jan 25, 2019
  * @since 0.4.5
  */
 @RequestProcessor
@@ -106,6 +107,8 @@ public class ErrorProcessor {
 
                 context.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
+
+            Solos.addGoogleNoIndex(context);
         } else {
             context.renderJSON().renderMsg(statusCode);
         }

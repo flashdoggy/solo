@@ -28,18 +28,32 @@ import org.testng.annotations.Test;
  * {@link IndexProcessor} test case.
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.1.1, May 29, 2018
+ * @version 1.0.1.2, Jan 24, 2019
  * @since 1.7.0
  */
 @Test(suiteName = "processor")
 public class IndexProcessorTestCase extends AbstractTestCase {
 
     /**
+     * showInit.
+     */
+    @Test
+    public void showInit() {
+        final MockHttpServletRequest request = mockRequest();
+        request.setRequestURI("/init");
+        final MockHttpServletResponse response = mockResponse();
+        mockDispatcherServletService(request, response);
+
+        final String content = response.body();
+        Assert.assertTrue(StringUtils.contains(content, "<title>欢迎使用!</title>"));
+    }
+
+    /**
      * Init.
      *
      * @throws Exception exception
      */
-    @Test
+    @Test(dependsOnMethods = "showInit")
     public void init() throws Exception {
         super.init();
     }
