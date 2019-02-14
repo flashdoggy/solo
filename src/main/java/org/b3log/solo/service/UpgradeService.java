@@ -80,7 +80,7 @@ public class UpgradeService {
     /**
      * Old version.
      */
-    private static final String FROM_VER = "2.9.7";
+    private static final String FROM_VER = "2.9.8";
 
     /**
      * New version.
