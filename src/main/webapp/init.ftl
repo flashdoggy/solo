@@ -28,13 +28,11 @@
 </h2>
 
 <div id="init">
-    <div id="github">
-        <div class="github__icon"
-             onclick="window.location.href = '${servePath}/oauth/github/redirect';$('#github').addClass('github--loading')">
-            <img src="${staticServePath}/images/github-init.gif"/>
-        </div>
-        <button class="hover"
-                onclick="window.location.href = '${servePath}/oauth/github/redirect';$('#github').addClass('github--loading')">${useGitHubAccountLoginLabel}</button>
+    <div id="authUser">
+        <input type="userName" id="userName" />
+        <input type="userEmail" id="userEmail" />
+        <input type="userPassword" id="userPassword" />
+        <button onclick="initLoginAsAdmin();">Login</button>
         <br>
     </div>
 </div>
@@ -47,5 +45,30 @@
             document.querySelector('.main').innerHTML = "${staticErrorLabel}<br><br><br><br><br>"
         }
     })()
+
+    var initLoginAsAdmin = function() {
+                var requestJSONObject = {
+                    "userName": $("#userName").val(),
+                    "userEmail": $("#userEmail").val(),
+                    "userPassword": $("#userPassword").val()
+                };
+
+                $("#tip").html("<img src='${staticServePath}/images/loading.gif'/> loading...")
+                $.ajax({
+                    url: "${servePath}" + "/initLoginAdmin",
+                    type: "POST",
+                    cache: false,
+                    data: requestJSONObject,
+                    success: function(result, textStatus) {
+                        $("#tip").text(result.msg);
+                        if (!result.sc) {
+                            return;
+                        }
+                        setTimeout(function() {
+                            window.location.href = "${servePath}";
+                        }, 1000);
+                    }
+                })
+            }
 </script>
 </@commonPage>

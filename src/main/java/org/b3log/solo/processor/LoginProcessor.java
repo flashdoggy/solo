@@ -19,12 +19,14 @@ package org.b3log.solo.processor;
 
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
+import org.b3log.latke.model.User;
 import org.b3log.latke.service.LangPropsService;
 import org.b3log.latke.servlet.HttpMethod;
 import org.b3log.latke.servlet.RequestContext;
@@ -34,7 +36,9 @@ import org.b3log.latke.servlet.renderer.AbstractFreeMarkerRenderer;
 import org.b3log.latke.util.Requests;
 import org.b3log.solo.model.Common;
 import org.b3log.solo.model.Option;
+import org.b3log.solo.model.UserExt;
 import org.b3log.solo.service.DataModelService;
+import org.b3log.solo.service.InitService;
 import org.b3log.solo.service.PreferenceQueryService;
 import org.b3log.solo.service.UserQueryService;
 import org.b3log.solo.util.Skins;
@@ -87,6 +91,12 @@ public class LoginProcessor {
      */
     @Inject
     private UserQueryService userQueryService;
+
+    /**
+     * Initialization service.
+     */
+    @Inject
+    private InitService initService;
 
     /**
      * Shows login page.
@@ -149,6 +159,49 @@ public class LoginProcessor {
         LOGGER.log(Level.INFO, "Logged in [email={0}, remoteAddr={1}] with GitHub oauth", userName, Requests.getRemoteAddr(request));
 
         return;
+    }
+
+    /**
+     * the first time when initing whole blog to set admin user
+     *
+     * @param context
+     */
+    @RequestProcessing(value = "/initLoginAdmin", method = HttpMethod.POST)
+    public void initAdmin(final RequestContext context) {
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+
+        final String userName = context.param("userName");
+        final String userEmail = context.param("userEmail");
+        final String userPassword = context.param("userPassword");
+        final String userAvatar = context.param("userAvatar");
+
+        if (!initService.isInited()) {
+            final JSONObject initReq = new JSONObject();
+            initReq.put(User.USER_NAME, userName);
+            initReq.put(User.USER_EMAIL, userEmail);
+            initReq.put(User.USER_PASSWORD, userPassword);
+            initReq.put(UserExt.USER_AVATAR, userAvatar);
+
+            try {
+                initService.init(initReq);
+            } catch (final Exception e) {
+                // ignored
+            }
+
+            JSONObject user = userQueryService.getUserByEmailOrUserName(userName);
+            if (null == user) {
+                user = userQueryService.getUserByEmailOrUserName(userEmail);
+            }
+
+            Solos.login(user, response);
+            context.sendRedirect(Latkes.getServePath());
+            LOGGER.log(Level.INFO, "Logged in [email={0}, remoteAddr={1}] with GitHub oauth", userEmail, Requests.getRemoteAddr(request));
+
+            return;
+        } else {
+            login(context);
+        }
     }
 
     /**

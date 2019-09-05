@@ -87,8 +87,15 @@ public final class InitCheckFilter implements Filter {
             return;
         }
 
+        if (StringUtils.startsWith(requestURI, Latkes.getContextPath() + "/initLoginAdmin")) {
+            // Do init Admin user
+            chain.doFilter(request, response);
+
+            return;
+        }
+
         if (StringUtils.startsWith(requestURI, Latkes.getContextPath() + "/normalLogin")) {
-            // Do initialization
+            // Do normal login
             chain.doFilter(request, response);
 
             return;

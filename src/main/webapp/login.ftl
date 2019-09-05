@@ -34,7 +34,6 @@ ${loginLabel}
     $('.wrap').css('padding', ($(window).height() - 450) / 2 + 'px 0')
 
     var loginWithNormal = function() {
-
             var requestJSONObject = {
                 "userName": $("#userName").val(),
                 "userPassword": $("#userPassword").val()
@@ -56,7 +55,6 @@ ${loginLabel}
                     }, 1000);
                 }
             })
-
         }
 </script>
 </@commonPage>

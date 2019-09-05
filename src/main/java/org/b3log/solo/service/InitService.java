@@ -165,6 +165,9 @@ public class InitService {
      * @return {@code true} if it had been initialized, {@code false} otherwise
      */
     public boolean isInited() {
+        // default with inited as personal use; kc 05092019
+//        return true;
+
         if (inited) {
             return true;
         }

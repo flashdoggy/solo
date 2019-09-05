@@ -84,6 +84,7 @@ public final class SoloServletListener extends AbstractServletListener {
         validateSkin();
 
         final InitService initService = beanManager.getReference(InitService.class);
+
         if (initService.isInited()) {
             // Upgrade check https://github.com/b3log/solo/issues/12040
             final UpgradeService upgradeService = beanManager.getReference(UpgradeService.class);
