@@ -23,16 +23,40 @@
 <h2>
 ${loginLabel}
 </h2>
-<div id="github">
-    <div class="github__icon"
-        onclick="window.location.href = '${servePath}/oauth/github/redirect';$('#github').addClass('github--loading')">
-        <img src="${staticServePath}/images/github-init.gif"/>
-    </div>
-    <button class="hover" onclick="window.location.href = '${servePath}/oauth/github/redirect';$('#github').addClass('github--loading')">${useGitHubAccountLoginLabel}</button>
+<div id="authUser">
+    <input type="userName" id="userName" />
+    <input type="userPassword" id="userPassword" />
+    <button onclick="loginWithNormal();">Login</button>
     <br>
 </div>
 <script type="text/javascript" src="${staticServePath}/js/lib/jquery/jquery.min.js" charset="utf-8"></script>
 <script type="text/javascript">
     $('.wrap').css('padding', ($(window).height() - 450) / 2 + 'px 0')
+
+    var loginWithNormal = function() {
+
+            var requestJSONObject = {
+                "userName": $("#userName").val(),
+                "userPassword": $("#userPassword").val()
+            };
+
+            $("#tip").html("<img src='${staticServePath}/images/loading.gif'/> loading...")
+            $.ajax({
+                url: "${servePath}" + "/normalLogin",
+                type: "POST",
+                cache: false,
+                data: requestJSONObject,
+                success: function(result, textStatus) {
+                    $("#tip").text(result.msg);
+                    if (!result.sc) {
+                        return;
+                    }
+                    setTimeout(function() {
+                        window.location.href = "${servePath}";
+                    }, 1000);
+                }
+            })
+
+        }
 </script>
 </@commonPage>

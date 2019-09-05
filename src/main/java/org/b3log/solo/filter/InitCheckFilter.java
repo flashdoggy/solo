@@ -87,6 +87,13 @@ public final class InitCheckFilter implements Filter {
             return;
         }
 
+        if (StringUtils.startsWith(requestURI, Latkes.getContextPath() + "/normalLogin")) {
+            // Do initialization
+            chain.doFilter(request, response);
+
+            return;
+        }
+
         if (StringUtils.startsWith(requestURI, Latkes.getContextPath() + "/oauth/github")) {
             // Do initialization
             chain.doFilter(request, response);

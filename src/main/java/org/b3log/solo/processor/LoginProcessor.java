@@ -17,6 +17,8 @@
  */
 package org.b3log.solo.processor;
 
+import com.google.gson.JsonObject;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
@@ -29,12 +31,15 @@ import org.b3log.latke.servlet.RequestContext;
 import org.b3log.latke.servlet.annotation.RequestProcessing;
 import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.latke.servlet.renderer.AbstractFreeMarkerRenderer;
+import org.b3log.latke.util.Requests;
 import org.b3log.solo.model.Common;
 import org.b3log.solo.model.Option;
 import org.b3log.solo.service.DataModelService;
 import org.b3log.solo.service.PreferenceQueryService;
+import org.b3log.solo.service.UserQueryService;
 import org.b3log.solo.util.Skins;
 import org.b3log.solo.util.Solos;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,6 +83,12 @@ public class LoginProcessor {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * User query service.
+     */
+    @Inject
+    private UserQueryService userQueryService;
+
+    /**
      * Shows login page.
      *
      * @param context the specified context
@@ -110,6 +121,34 @@ public class LoginProcessor {
         }
 
         Solos.addGoogleNoIndex(context);
+    }
+
+    /**
+     * login with username & password
+     *
+     * @param context
+     */
+    @RequestProcessing(value = "/normalLogin", method = HttpMethod.POST)
+    public void login(final RequestContext context) {
+        final HttpServletRequest request = context.getRequest();
+        final HttpServletResponse response = context.getResponse();
+        final String userName = context.param("userName");
+        final String userPassword = context.param("userPassword");
+
+        JSONObject user = userQueryService.getUserByEmailOrUserName(userName);
+        if (null == user) {
+            return ;
+        }
+
+        if (!user.optString("userPassword").equals( DigestUtils.md5Hex(userPassword))) {
+            return ;
+        }
+
+        Solos.login(user, response);
+        context.sendRedirect(Latkes.getServePath());
+        LOGGER.log(Level.INFO, "Logged in [email={0}, remoteAddr={1}] with GitHub oauth", userName, Requests.getRemoteAddr(request));
+
+        return;
     }
 
     /**
