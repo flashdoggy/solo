@@ -498,8 +498,14 @@ public class InitService {
         admin.put(User.USER_URL, Latkes.getServePath());
         admin.put(User.USER_ROLE, Role.ADMIN_ROLE);
         admin.put(User.USER_PASSWORD, DigestUtils.md5Hex(requestJSONObject.getString(User.USER_PASSWORD)));
-        admin.put(UserExt.USER_ARTICLE_COUNT, 0);
-        admin.put(UserExt.USER_PUBLISHED_ARTICLE_COUNT, 0);
+
+        // the two columns below are no longer using;
+//        admin.put(UserExt.USER_ARTICLE_COUNT, 0);
+//        admin.put(UserExt.USER_PUBLISHED_ARTICLE_COUNT, 0);
+
+        // the two columns below giving a default value;
+        admin.put(UserExt.USER_B3_KEY, "adminDefault");
+        admin.put(UserExt.USER_GITHUB_ID, "adminDefault");
         String avatar = requestJSONObject.optString(UserExt.USER_AVATAR);
         if (StringUtils.isBlank(avatar)) {
             avatar = Solos.getGravatarURL(requestJSONObject.getString(User.USER_EMAIL), "128");

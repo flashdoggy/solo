@@ -45,6 +45,16 @@ public final class UserExt {
     public static final String USER_AVATAR = "userAvatar";
 
     /**
+     * Key of user b3 key.
+     */
+    public static final String USER_B3_KEY = "userB3Key";
+
+    /**
+     * Key of user github id.
+     */
+    public static final String USER_GITHUB_ID = "userGitHubId";
+
+    /**
      * Max user name length.
      */
     public static final int MAX_USER_NAME_LENGTH = 20;
