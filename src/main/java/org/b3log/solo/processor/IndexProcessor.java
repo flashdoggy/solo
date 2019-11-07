@@ -38,10 +38,7 @@ import org.b3log.solo.model.Common;
 import org.b3log.solo.model.Option;
 import org.b3log.solo.model.Skin;
 import org.b3log.solo.processor.console.ConsoleRenderer;
-import org.b3log.solo.service.DataModelService;
-import org.b3log.solo.service.InitService;
-import org.b3log.solo.service.PreferenceQueryService;
-import org.b3log.solo.service.StatisticMgmtService;
+import org.b3log.solo.service.*;
 import org.b3log.solo.util.Skins;
 import org.json.JSONObject;
 
@@ -80,6 +77,12 @@ public class IndexProcessor {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Language service.
      */
     @Inject
@@ -111,7 +114,7 @@ public class IndexProcessor {
         final Map<String, Object> dataModel = renderer.getDataModel();
         try {
             final int currentPageNum = Paginator.getPage(request);
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
 
             // https://github.com/b3log/solo/issues/12060
             String specifiedSkin = Skins.getSkinDirName(context);
@@ -129,7 +132,7 @@ public class IndexProcessor {
 
             dataModelService.fillIndexArticles(context, dataModel, currentPageNum, preference);
             dataModelService.fillCommon(context, dataModel, preference);
-
+            dataModelService.fillFaviconURL(dataModel, preference);
             dataModel.put(Pagination.PAGINATION_CURRENT_PAGE_NUM, currentPageNum);
             final int previousPageNum = currentPageNum > 1 ? currentPageNum - 1 : 0;
             dataModel.put(Pagination.PAGINATION_PREVIOUS_PAGE_NUM, previousPageNum);
@@ -160,8 +163,9 @@ public class IndexProcessor {
         try {
             final Map<String, String> langs = langPropsService.getAll(Locales.getLocale(request));
             dataModel.putAll(langs);
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             dataModelService.fillCommon(context, dataModel, preference);
+            dataModelService.fillFaviconURL(dataModel, preference);
             Keys.fillServer(dataModel);
             Keys.fillRuntime(dataModel);
             dataModelService.fillMinified(dataModel);
@@ -184,8 +188,9 @@ public class IndexProcessor {
         try {
             final Map<String, String> langs = langPropsService.getAll(Latkes.getLocale());
             dataModel.putAll(langs);
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             dataModelService.fillCommon(context, dataModel, preference);
+            dataModelService.fillFaviconURL(dataModel, preference);
             dataModelService.fillMinified(dataModel);
         } catch (final ServiceException e) {
             LOGGER.log(Level.ERROR, e.getMessage(), e);
@@ -208,9 +213,9 @@ public class IndexProcessor {
         }
 
         final HttpServletRequest request = context.getRequest();
-        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer();
-        renderer.setTemplateName("init.ftl");
-        context.setRenderer(renderer);
+        final String templateName = "init.ftl";
+        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer(context, templateName);
+
         final Map<String, Object> dataModel = renderer.getDataModel();
         final Map<String, String> langs = langPropsService.getAll(Locales.getLocale(request));
         dataModel.putAll(langs);

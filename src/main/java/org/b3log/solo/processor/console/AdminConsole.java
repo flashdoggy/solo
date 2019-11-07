@@ -25,7 +25,6 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.event.Event;
-import org.b3log.latke.event.EventManager;
 import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.ioc.Singleton;
 import org.b3log.latke.logging.Level;
@@ -41,6 +40,7 @@ import org.b3log.latke.servlet.renderer.AbstractFreeMarkerRenderer;
 import org.b3log.latke.util.Execs;
 import org.b3log.latke.util.Strings;
 import org.b3log.solo.SoloServletListener;
+import org.b3log.solo.event.EventManager;
 import org.b3log.solo.model.Common;
 import org.b3log.solo.model.Option;
 import org.b3log.solo.model.Skin;
@@ -131,10 +131,12 @@ public class AdminConsole {
      * @param context the specified context
      */
     public void showAdminIndex(final RequestContext context) {
-        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer();
-        context.setRenderer(renderer);
+//        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer();
+//        context.setRenderer(renderer);
         final String templateName = "admin-index.ftl";
-        renderer.setTemplateName(templateName);
+        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer(context, templateName);
+
+//        renderer.setTemplateName(templateName);
         final Map<String, String> langs = langPropsService.getAll(Latkes.getLocale());
         final Map<String, Object> dataModel = renderer.getDataModel();
         dataModel.putAll(langs);
@@ -153,7 +155,7 @@ public class AdminConsole {
         }
 
         try {
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             dataModel.put(Option.ID_C_LOCALE_STRING, preference.getString(Option.ID_C_LOCALE_STRING));
             dataModel.put(Option.ID_C_BLOG_TITLE, preference.getString(Option.ID_C_BLOG_TITLE));
             dataModel.put(Option.ID_C_BLOG_SUBTITLE, preference.getString(Option.ID_C_BLOG_SUBTITLE));
@@ -163,12 +165,15 @@ public class AdminConsole {
             dataModel.put(Option.ID_C_ARTICLE_LIST_DISPLAY_COUNT, preference.getInt(Option.ID_C_ARTICLE_LIST_DISPLAY_COUNT));
             dataModel.put(Option.ID_C_ARTICLE_LIST_PAGINATION_WINDOW_SIZE, preference.getInt(Option.ID_C_ARTICLE_LIST_PAGINATION_WINDOW_SIZE));
             dataModel.put(Option.ID_C_LOCALE_STRING, preference.getString(Option.ID_C_LOCALE_STRING));
-            dataModel.put(Option.ID_C_EDITOR_TYPE, preference.getString(Option.ID_C_EDITOR_TYPE));
-            dataModel.put(Skin.SKIN_DIR_NAME, preference.getString(Skin.SKIN_DIR_NAME));
-            Keys.fillRuntime(dataModel);
-            dataModelService.fillMinified(dataModel);
+            final JSONObject skin = optionQueryService.getOptions("skin");
+            dataModel.put("skin", skin.optString(Option.ID_C_SKIN_DIR_NAME));
+            dataModel.put(Skin.SKIN_DIR_NAME, skin.optString(Option.ID_C_SKIN_DIR_NAME));
             // 使用 Marked 时代码高亮问题 https://github.com/b3log/solo/issues/12614
             dataModel.put(Common.MARKED_AVAILABLE, Markdowns.MARKED_AVAILABLE);
+            Keys.fillRuntime(dataModel);
+            dataModelService.fillMinified(dataModel);
+            dataModelService.fillFaviconURL(dataModel, preference);
+            dataModelService.fillCommon(context, dataModel, preference);
         } catch (final Exception e) {
             LOGGER.log(Level.ERROR, "Admin index render failed", e);
         }
@@ -182,13 +187,11 @@ public class AdminConsole {
      * @param context the specified context
      */
     public void showAdminFunctions(final RequestContext context) {
-        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer();
-        context.setRenderer(renderer);
         final String requestURI = context.requestURI();
         final String templateName = StringUtils.substringBetween(requestURI, Latkes.getContextPath() + '/', ".") + ".ftl";
+        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer(context, templateName);
 
         LOGGER.log(Level.TRACE, "Admin function[templateName={0}]", templateName);
-        renderer.setTemplateName(templateName);
 
         final Locale locale = Latkes.getLocale();
         final Map<String, String> langs = langPropsService.getAll(locale);
@@ -209,10 +212,8 @@ public class AdminConsole {
      * @param context the specified context
      */
     public void showAdminPreferenceFunction(final RequestContext context) {
-        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer();
-        context.setRenderer(renderer);
         final String templateName = "admin-preference.ftl";
-        renderer.setTemplateName(templateName);
+        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer(context, templateName);
 
         final Locale locale = Latkes.getLocale();
         final Map<String, String> langs = langPropsService.getAll(locale);
@@ -220,7 +221,7 @@ public class AdminConsole {
         dataModel.putAll(langs);
         dataModel.put(Option.ID_C_LOCALE_STRING, locale.toString());
 
-        final JSONObject preference = preferenceQueryService.getPreference();
+        final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
         final StringBuilder timeZoneIdOptions = new StringBuilder();
         final String[] availableIDs = TimeZone.getAvailableIDs();
         for (int i = 0; i < availableIDs.length; i++) {

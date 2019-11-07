@@ -109,6 +109,12 @@ public class ArticleProcessor {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Option query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Archive date query service.
      */
     @Inject
@@ -159,9 +165,8 @@ public class ArticleProcessor {
             return;
         }
 
-        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer();
-        context.setRenderer(renderer);
-        renderer.setTemplateName("article-pwd.ftl");
+        final String templateName = "article-pwd.ftl";
+        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer(context, templateName);
 
         final Map<String, Object> dataModel = renderer.getDataModel();
         dataModel.put("articleId", articleId);
@@ -177,7 +182,7 @@ public class ArticleProcessor {
         final Map<String, String> langs = langPropsService.getAll(Latkes.getLocale());
         dataModel.putAll(langs);
 
-        final JSONObject preference = preferenceQueryService.getPreference();
+        final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
         dataModel.put(Option.ID_C_BLOG_TITLE, preference.getString(Option.ID_C_BLOG_TITLE));
         dataModel.put(Common.VERSION, SoloServletListener.VERSION);
         dataModel.put(Common.STATIC_RESOURCE_VERSION, Latkes.getStaticResourceVersion());
@@ -185,6 +190,7 @@ public class ArticleProcessor {
 
         Keys.fillRuntime(dataModel);
         dataModelService.fillMinified(dataModel);
+        dataModelService.fillFaviconURL(dataModel, preference);
     }
 
     /**
@@ -235,7 +241,7 @@ public class ArticleProcessor {
     public void getRandomArticles(final RequestContext context) {
         final JSONObject jsonObject = new JSONObject();
 
-        final JSONObject preference = preferenceQueryService.getPreference();
+        final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
         final int displayCnt = preference.getInt(Option.ID_C_RANDOM_ARTICLES_DISPLAY_CNT);
         if (0 == displayCnt) {
             jsonObject.put(Common.RANDOM_ARTICLES, new ArrayList<JSONObject>());
@@ -268,7 +274,7 @@ public class ArticleProcessor {
     public void getRelevantArticles(final RequestContext context) {
         final JSONObject jsonObject = new JSONObject();
 
-        final JSONObject preference = preferenceQueryService.getPreference();
+        final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
 
         final int displayCnt = preference.getInt(Option.ID_C_RELEVANT_ARTICLES_DISPLAY_CNT);
         if (0 == displayCnt) {
@@ -353,7 +359,7 @@ public class ArticleProcessor {
         try {
             jsonObject.put(Keys.STATUS_CODE, true);
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final int pageSize = preference.getInt(Option.ID_C_ARTICLE_LIST_DISPLAY_COUNT);
             final int windowSize = preference.getInt(Option.ID_C_ARTICLE_LIST_PAGINATION_WINDOW_SIZE);
 
@@ -396,7 +402,7 @@ public class ArticleProcessor {
         try {
             jsonObject.put(Keys.STATUS_CODE, true);
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final int pageSize = preference.getInt(Option.ID_C_ARTICLE_LIST_DISPLAY_COUNT);
 
             final JSONObject tagQueryResult = tagQueryService.getTagByTitle(tagTitle);
@@ -447,7 +453,7 @@ public class ArticleProcessor {
         try {
             jsonObject.put(Keys.STATUS_CODE, true);
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final int pageSize = preference.getInt(Option.ID_C_ARTICLE_LIST_DISPLAY_COUNT);
 
             final JSONObject archiveQueryResult = archiveDateQueryService.getByArchiveDateString(archiveDateString);
@@ -499,7 +505,7 @@ public class ArticleProcessor {
         try {
             jsonObject.put(Keys.STATUS_CODE, true);
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final int pageSize = preference.getInt(Option.ID_C_ARTICLE_LIST_DISPLAY_COUNT);
 
             final JSONObject authorRet = userQueryService.getUser(authorId);
@@ -550,7 +556,7 @@ public class ArticleProcessor {
             final int currentPageNum = Paginator.getPage(request);
             LOGGER.log(Level.DEBUG, "Request author articles [authorId={0}, currentPageNum={1}]", authorId, currentPageNum);
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             if (null == preference) {
                 context.sendError(HttpServletResponse.SC_NOT_FOUND);
 
@@ -585,6 +591,7 @@ public class ArticleProcessor {
             prepareShowAuthorArticles(pageNums, dataModel, pageCount, currentPageNum, articles, author);
             final HttpServletResponse response = context.getResponse();
             dataModelService.fillCommon(context, dataModel, preference);
+            dataModelService.fillFaviconURL(dataModel, preference);
             Skins.fillLangs(preference.optString(Option.ID_C_LOCALE_STRING), (String) context.attr(Keys.TEMAPLTE_DIR_NAME), dataModel);
 
             statisticMgmtService.incBlogViewCount(context, response);
@@ -620,7 +627,7 @@ public class ArticleProcessor {
             final JSONObject archiveDate = result.getJSONObject(ArchiveDate.ARCHIVE_DATE);
             final String archiveDateId = archiveDate.getString(Keys.OBJECT_ID);
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final int pageSize = preference.getInt(Option.ID_C_ARTICLE_LIST_DISPLAY_COUNT);
 
             final int articleCount = archiveDate.getInt(ArchiveDate.ARCHIVE_DATE_PUBLISHED_ARTICLE_COUNT);
@@ -640,7 +647,7 @@ public class ArticleProcessor {
             prepareShowArchiveArticles(preference, dataModel, articles, currentPageNum, pageCount, archiveDateString, archiveDate);
             final HttpServletResponse response = context.getResponse();
             dataModelService.fillCommon(context, dataModel, preference);
-
+            dataModelService.fillFaviconURL(dataModel, preference);
             statisticMgmtService.incBlogViewCount(context, response);
         } catch (final Exception e) {
             LOGGER.log(Level.ERROR, e.getMessage(), e);
@@ -669,7 +676,7 @@ public class ArticleProcessor {
         final AbstractFreeMarkerRenderer renderer = new SkinRenderer(context, "article.ftl");
 
         try {
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final boolean allowVisitDraftViaPermalink = preference.getBoolean(Option.ID_C_ALLOW_VISIT_DRAFT_VIA_PERMALINK);
             if (!article.optBoolean(Article.ARTICLE_IS_PUBLISHED) && !allowVisitDraftViaPermalink) {
                 context.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -716,6 +723,7 @@ public class ArticleProcessor {
 
             final HttpServletResponse response = context.getResponse();
             dataModelService.fillCommon(context, dataModel, preference);
+            dataModelService.fillFaviconURL(dataModel, preference);
             Skins.fillLangs(preference.optString(Option.ID_C_LOCALE_STRING), (String) context.attr(Keys.TEMAPLTE_DIR_NAME), dataModel);
 
             if (!StatisticMgmtService.hasBeenServed(context, response)) {

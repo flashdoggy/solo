@@ -108,6 +108,7 @@ admin.preference = {
                 $("#editorType").val(preference.editorType);
                 $("#feedOutputMode").val(preference.feedOutputMode);
                 $("#feedOutputCnt").val(preference.feedOutputCnt);
+                $('#faviconURL').val(preference.faviconURL);
 
                 $("#loadMsg").text("");
             }
@@ -228,6 +229,7 @@ admin.preference = {
                 "editorType": $("#editorType").val(),
                 "feedOutputMode": $("#feedOutputMode").val(),
                 "feedOutputCnt": $("#feedOutputCnt").val(),
+                'faviconURL': $('#faviconURL').val(),
                 "commentable": $("#commentable").prop("checked"),
                 "allowRegister": $("#allowRegister").prop("checked"),
                 "customVars": $("#customVars").val()

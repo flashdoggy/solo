@@ -1,6 +1,6 @@
 /*
  * Solo - A small and beautiful blogging system written in Java.
- * Copyright (c) 2010-2019, b3log.org & hacpai.com
+ * Copyright (c) 2010-present, b3log.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,12 +25,12 @@ import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Plugin;
 import org.b3log.latke.plugin.AbstractPlugin;
-import org.b3log.latke.plugin.PluginManager;
 import org.b3log.latke.plugin.PluginStatus;
 import org.b3log.latke.repository.Query;
 import org.b3log.latke.repository.Transaction;
 import org.b3log.latke.service.LangPropsService;
 import org.b3log.latke.service.annotation.Service;
+import org.b3log.solo.plugin.PluginManager;
 import org.b3log.solo.repository.PluginRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -249,23 +249,5 @@ public class PluginMgmtService {
 
         return ret;
 
-    }
-
-    /**
-     * Sets the plugin repository with the specified plugin repository.
-     *
-     * @param pluginRepository the specified plugin repository
-     */
-    public void setPluginRepository(final PluginRepository pluginRepository) {
-        this.pluginRepository = pluginRepository;
-    }
-
-    /**
-     * Sets the language service with the specified language service.
-     *
-     * @param langPropsService the specified language service
-     */
-    public void setLangPropsService(final LangPropsService langPropsService) {
-        this.langPropsService = langPropsService;
     }
 }

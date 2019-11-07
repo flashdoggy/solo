@@ -21,36 +21,37 @@
 
 <@commonPage "${registerSoloUserLabel}!">
 <h2>${registerSoloUserLabel}</h2>
-<div id="github">
-    <div class="github__icon" href="${servePath}/oauth/github/redirect"
-         onclick="window.location.href = '${servePath}/oauth/github/redirect';$('#github').addClass('github--loading')">
-        <img src="${staticServePath}/images/github-init.gif"/>
+<div> <#-- class="form none" --> <#-- which giving a invisible choice -->
+    <div>
+        <label for="userEmail">
+        ${commentEmail1Label}
+        </label>
+        <input id="userEmail" />
     </div>
-    <button class="hover"
-            onclick="window.location.href = '${servePath}/oauth/github/redirect';$('#github').addClass('github--loading')">${useGitHubAccountLoginLabel}</button>
-    <br>
-</div>
-<div class="form none">
-    <label for="userEmail">
-    ${commentEmail1Label}
-    </label>
-    <input id="userEmail" />
+    <div>
     <label for="userName">
     ${userName1Label}
     </label>
     <input id="userName" />
+    </div>
+    <div>
     <label for="userURL">
     ${userURL1Label}
     </label>
     <input id="userURL" />
+    </div>
+    <div>
     <label for="userPassword">
     ${userPassword1Label}
     </label>
     <input type="password" id="userPassword" />
+    </div>
+    <div>
     <label for="userPasswordConfirm">
     ${userPasswordConfirm1Label}
     </label>
     <input type="password" id="userPasswordConfirm" />
+    </div>
     <button onclick='getUserInfo();'>${registerSoloUserLabel}</button>
     <span id="tip" ></span>
 </div>

@@ -23,6 +23,7 @@ import org.b3log.latke.Latkes;
 import org.b3log.latke.event.AbstractEventListener;
 import org.b3log.latke.event.Event;
 import org.b3log.latke.ioc.BeanManager;
+import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.ioc.Singleton;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
@@ -30,6 +31,7 @@ import org.b3log.latke.util.Strings;
 import org.b3log.solo.SoloServletListener;
 import org.b3log.solo.model.Comment;
 import org.b3log.solo.model.Option;
+import org.b3log.solo.service.OptionQueryService;
 import org.b3log.solo.service.PreferenceQueryService;
 import org.b3log.solo.util.Solos;
 import org.json.JSONObject;
@@ -50,6 +52,12 @@ public class B3CommentSender extends AbstractEventListener<JSONObject> {
     private static final Logger LOGGER = Logger.getLogger(B3CommentSender.class);
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * URL of adding comment to Symphony.
      */
     private static final String ADD_COMMENT_URL = Solos.B3LOG_SYMPHONY_SERVE_PATH + "/solo/comment";
@@ -66,7 +74,7 @@ public class B3CommentSender extends AbstractEventListener<JSONObject> {
             final BeanManager beanManager = BeanManager.getInstance();
             final PreferenceQueryService preferenceQueryService = beanManager.getReference(PreferenceQueryService.class);
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             if (null == preference) {
                 LOGGER.log(Level.ERROR, "Not found preference");
 

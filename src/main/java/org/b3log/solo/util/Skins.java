@@ -234,6 +234,10 @@ public final class Skins {
             }
         }
 
+        if (StringUtils.isBlank(getSkinDirNameFromCookie(context.getRequest()))) {
+            return Option.DefaultPreference.DEFAULT_SKIN_DIR_NAME;
+        }
+
         // 2. Get skin from cookie
         return getSkinDirNameFromCookie(context.getRequest());
     }

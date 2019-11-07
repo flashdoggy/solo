@@ -55,6 +55,11 @@ public final class Option {
      */
     public static final String OPTION_CATEGORY = "optionCategory";
 
+    /**
+     * Key of favicon URL.
+     */
+    public static final String ID_C_FAVICON_URL = "faviconURL";
+
     // oId constants
     /**
      * Key of custom vars.
@@ -295,6 +300,11 @@ public final class Option {
     public static final String ID_C_SKIN_DIR_NAME = "skinDirName";
 
     /**
+     * Key of mobile skin dir name.
+     */
+    public static final String ID_C_MOBILE_SKIN_DIR_NAME = "mobileSkinDirName";
+
+    /**
      * Key of skin name.
      */
     public static final String ID_C_SKIN_NAME = "skinName";
@@ -411,6 +421,11 @@ public final class Option {
         public static final String DEFAULT_CUSTOM_VARS = "key0=val0|key1=val1|key2=val2";
 
         /**
+         * Default favicon URL.
+         */
+        public static final String DEFAULT_FAVICON_URL = "https://static.b3log.org/images/brand/solo-32.png";
+
+        /**
          * Default recent article display count.
          */
         public static final int DEFAULT_RECENT_ARTICLE_DISPLAY_COUNT = 10;
@@ -449,6 +464,11 @@ public final class Option {
          * Default skin directory name.
          */
         public static final String DEFAULT_SKIN_DIR_NAME = "next";
+
+        /**
+         * Default mobile skin directory name.
+         */
+        public static final String DEFAULT_MOBILE_SKIN_DIR_NAME = "next";
 
         /**
          * Default language.

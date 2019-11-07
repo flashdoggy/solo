@@ -37,10 +37,7 @@ import org.b3log.latke.util.Requests;
 import org.b3log.solo.model.Common;
 import org.b3log.solo.model.Option;
 import org.b3log.solo.model.UserExt;
-import org.b3log.solo.service.DataModelService;
-import org.b3log.solo.service.InitService;
-import org.b3log.solo.service.PreferenceQueryService;
-import org.b3log.solo.service.UserQueryService;
+import org.b3log.solo.service.*;
 import org.b3log.solo.util.Skins;
 import org.b3log.solo.util.Solos;
 import org.json.JSONArray;
@@ -87,6 +84,12 @@ public class LoginProcessor {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * User query service.
      */
     @Inject
@@ -120,7 +123,7 @@ public class LoginProcessor {
 
         final AbstractFreeMarkerRenderer renderer = new SkinRenderer(context, "login.ftl");
         final Map<String, Object> dataModel = renderer.getDataModel();
-        final JSONObject preference = preferenceQueryService.getPreference();
+        final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
         try {
             Skins.fillLangs(preference.optString(Option.ID_C_LOCALE_STRING), (String) context.attr(Keys.TEMAPLTE_DIR_NAME), dataModel);
             dataModelService.fillCommon(context, dataModel, preference);
@@ -149,6 +152,8 @@ public class LoginProcessor {
         if (null == user) {
             return ;
         }
+
+        String password = DigestUtils.md5Hex(userPassword);
 
         if (!user.optString("userPassword").equals( DigestUtils.md5Hex(userPassword))) {
             return ;

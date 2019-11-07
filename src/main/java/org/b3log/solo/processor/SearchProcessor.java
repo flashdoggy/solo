@@ -35,10 +35,7 @@ import org.b3log.latke.util.Paginator;
 import org.b3log.solo.model.Article;
 import org.b3log.solo.model.Common;
 import org.b3log.solo.model.Option;
-import org.b3log.solo.service.ArticleQueryService;
-import org.b3log.solo.service.DataModelService;
-import org.b3log.solo.service.PreferenceQueryService;
-import org.b3log.solo.service.UserQueryService;
+import org.b3log.solo.service.*;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -85,6 +82,12 @@ public class SearchProcessor {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Language service.
      */
     @Inject
@@ -109,7 +112,7 @@ public class SearchProcessor {
         try {
             final InputStream resourceAsStream = SearchProcessor.class.getResourceAsStream("/opensearch.xml");
             String content = IOUtils.toString(resourceAsStream, "UTF-8");
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             content = StringUtils.replace(content, "${blogTitle}", Jsoup.clean(preference.optString(Option.ID_C_BLOG_TITLE), Whitelist.none()));
             content = StringUtils.replace(content, "${blogSubtitle}", Jsoup.clean(preference.optString(Option.ID_C_BLOG_SUBTITLE), Whitelist.none()));
             content = StringUtils.replace(content, "${servePath}", Latkes.getServePath());
@@ -145,9 +148,10 @@ public class SearchProcessor {
         final List<JSONObject> articles = (List<JSONObject>) result.opt(Article.ARTICLES);
 
         try {
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
 
             dataModelService.fillCommon(context, dataModel, preference);
+            dataModelService.fillFaviconURL(dataModel, preference);
             dataModelService.setArticlesExProperties(context, articles, preference);
 
             dataModel.put(Article.ARTICLES, articles);

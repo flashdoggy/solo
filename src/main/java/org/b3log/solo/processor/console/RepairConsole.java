@@ -35,10 +35,7 @@ import org.b3log.solo.model.Tag;
 import org.b3log.solo.repository.ArticleRepository;
 import org.b3log.solo.repository.TagArticleRepository;
 import org.b3log.solo.repository.TagRepository;
-import org.b3log.solo.service.PreferenceMgmtService;
-import org.b3log.solo.service.PreferenceQueryService;
-import org.b3log.solo.service.StatisticMgmtService;
-import org.b3log.solo.service.StatisticQueryService;
+import org.b3log.solo.service.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -70,6 +67,12 @@ public class RepairConsole {
      */
     @Inject
     private PreferenceQueryService preferenceQueryService;
+
+    /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
 
     /**
      * Preference management service.
@@ -117,7 +120,7 @@ public class RepairConsole {
         context.setRenderer(renderer);
 
         try {
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             preference.put(Option.ID_C_SIGNS, Option.DefaultPreference.DEFAULT_SIGNS);
             preferenceMgmtService.updatePreference(preference);
 

@@ -117,6 +117,12 @@ public class ArticleMgmtService {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Permalink query service.
      */
     @Inject
@@ -303,7 +309,7 @@ public class ArticleMgmtService {
             fillAutoProperties(oldArticle, article);
             // Set date
             article.put(ARTICLE_UPDATED, oldArticle.getLong(ARTICLE_UPDATED));
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final long now = System.currentTimeMillis();
 
             // The article to update has no sign
@@ -463,7 +469,7 @@ public class ArticleMgmtService {
 
             article.put(Article.ARTICLE_COMMENT_COUNT, 0);
             article.put(Article.ARTICLE_VIEW_COUNT, 0);
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             if (!article.has(Article.ARTICLE_CREATED)) {
                 article.put(Article.ARTICLE_CREATED, System.currentTimeMillis());
             }

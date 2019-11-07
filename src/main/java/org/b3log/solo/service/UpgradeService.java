@@ -118,6 +118,12 @@ public class UpgradeService {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Statistic query service.
      */
     @Inject
@@ -146,7 +152,11 @@ public class UpgradeService {
      */
     public void upgrade() {
         try {
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
+
+            // For Personal Using, shut down check current version. kc 20191108
+            if (1==1) return;
+
             if (null == preference) {
                 return;
             }
@@ -375,7 +385,7 @@ public class UpgradeService {
             return;
         }
 
-        final String adminEmail = preferenceQueryService.getPreference().getString(Option.ID_C_ADMIN_EMAIL);
+        final String adminEmail = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE).getString(Option.ID_C_ADMIN_EMAIL);
         final MailService.Message message = new MailService.Message();
         message.setFrom(adminEmail);
         message.addRecipient(adminEmail);

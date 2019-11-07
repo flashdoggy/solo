@@ -24,9 +24,9 @@ import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.event.EventManager;
 import org.b3log.latke.ioc.BeanManager;
+import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
-import org.b3log.latke.plugin.PluginManager;
 import org.b3log.latke.plugin.ViewLoadEventHandler;
 import org.b3log.latke.repository.Transaction;
 import org.b3log.latke.servlet.AbstractServletListener;
@@ -37,6 +37,7 @@ import org.b3log.latke.util.Strings;
 import org.b3log.solo.event.*;
 import org.b3log.solo.model.Option;
 import org.b3log.solo.model.Skin;
+import org.b3log.solo.plugin.PluginManager;
 import org.b3log.solo.processor.console.*;
 import org.b3log.solo.repository.OptionRepository;
 import org.b3log.solo.service.*;
@@ -72,6 +73,12 @@ public final class SoloServletListener extends AbstractServletListener {
      * Bean manager.
      */
     private BeanManager beanManager;
+
+    /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
 
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
@@ -182,16 +189,16 @@ public final class SoloServletListener extends AbstractServletListener {
 
         LOGGER.debug("Loading preference....");
 
-        final PreferenceQueryService preferenceQueryService = beanManager.getReference(PreferenceQueryService.class);
-        JSONObject preference;
+        final OptionQueryService optionQueryService = beanManager.getReference(OptionQueryService.class);
+        JSONObject skin;
         try {
-            preference = preferenceQueryService.getPreference();
-            if (null == preference) {
+            skin = optionQueryService.getOptions(Skin.SKIN);
+            if (null == skin) {
                 return;
             }
 
-            final PreferenceMgmtService preferenceMgmtService = beanManager.getReference(PreferenceMgmtService.class);
-            preferenceMgmtService.loadSkins(preference);
+            final SkinMgmtService skinMgmtService = beanManager.getReference(SkinMgmtService.class);
+            skinMgmtService.loadSkins(skin);
         } catch (final Exception e) {
             LOGGER.log(Level.ERROR, e.getMessage(), e);
 
@@ -242,24 +249,21 @@ public final class SoloServletListener extends AbstractServletListener {
     private void resolveSkinDir(final HttpServletRequest httpServletRequest) {
         String skin = Skins.getSkinDirNameFromCookie(httpServletRequest);
         if (StringUtils.isBlank(skin)) {
-            try {
-                final InitService initService = beanManager.getReference(InitService.class);
-                if (initService.isInited()) {
-                    final PreferenceQueryService preferenceQueryService = beanManager.getReference(PreferenceQueryService.class);
-                    final JSONObject preference = preferenceQueryService.getPreference();
-                    if (null != preference) {
-                        skin = preference.getString(Skin.SKIN_DIR_NAME);
-                    }
+            final OptionQueryService optionQueryService = beanManager.getReference(OptionQueryService.class);
+            final JSONObject skinOpt = optionQueryService.getOptions(Skin.SKIN);
+            if (Solos.isMobile(httpServletRequest)) {
+                if (null != skinOpt) {
+                    skin = skinOpt.optString(Option.ID_C_MOBILE_SKIN_DIR_NAME);
+                } else {
+                    skin = Option.DefaultPreference.DEFAULT_MOBILE_SKIN_DIR_NAME;
                 }
-            } catch (final Exception e) {
-                LOGGER.log(Level.ERROR, "Resolves skin failed", e);
+            } else {
+                if (null != skinOpt) {
+                    skin = skinOpt.optString(Option.ID_C_SKIN_DIR_NAME);
+                } else {
+                    skin = Option.DefaultPreference.DEFAULT_SKIN_DIR_NAME;
+                }
             }
-        }
-        if (StringUtils.isBlank(skin)) {
-            skin = Option.DefaultPreference.DEFAULT_SKIN_DIR_NAME;
-        }
-        if (Solos.isMobile(httpServletRequest)) {
-            skin = Solos.MOBILE_SKIN;
         }
 
         httpServletRequest.setAttribute(Keys.TEMAPLTE_DIR_NAME, skin);

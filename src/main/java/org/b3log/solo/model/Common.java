@@ -28,6 +28,11 @@ package org.b3log.solo.model;
 public final class Common {
 
     /**
+     * Key of favicon URL.
+     */
+    public static final String FAVICON_URL = "faviconURL";
+
+    /**
      * Key of marked engine available.
      */
     public static final String MARKED_AVAILABLE = "markedAvailable";

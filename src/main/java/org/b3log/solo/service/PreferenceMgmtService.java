@@ -63,6 +63,12 @@ public class PreferenceMgmtService {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Option repository.
      */
     @Inject
@@ -208,7 +214,7 @@ public class PreferenceMgmtService {
 
             preference.put(Option.ID_C_SIGNS, preference.get(Option.ID_C_SIGNS).toString());
 
-            final JSONObject oldPreference = preferenceQueryService.getPreference();
+            final JSONObject oldPreference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final String adminEmail = oldPreference.getString(Option.ID_C_ADMIN_EMAIL);
             preference.put(Option.ID_C_ADMIN_EMAIL, adminEmail);
 
@@ -356,6 +362,10 @@ public class PreferenceMgmtService {
             final JSONObject versionOpt = optionRepository.get(Option.ID_C_VERSION);
             versionOpt.put(Option.OPTION_VALUE, preference.optString(Option.ID_C_VERSION));
             optionRepository.update(Option.ID_C_VERSION, versionOpt);
+
+            final JSONObject faviconURLOpt = optionRepository.get(Option.ID_C_FAVICON_URL);
+            faviconURLOpt.put(Option.OPTION_VALUE, preference.optString(Option.ID_C_FAVICON_URL));
+            optionRepository.update(Option.ID_C_FAVICON_URL, faviconURLOpt);
 
             final JSONObject customVarsOpt = optionRepository.get(Option.ID_C_CUSTOM_VARS);
             customVarsOpt.put(Option.OPTION_VALUE, preference.optString(Option.ID_C_CUSTOM_VARS));

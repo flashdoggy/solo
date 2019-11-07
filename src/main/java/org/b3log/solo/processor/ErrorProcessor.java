@@ -29,7 +29,9 @@ import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.latke.servlet.renderer.AbstractFreeMarkerRenderer;
 import org.b3log.latke.util.Locales;
 import org.b3log.solo.model.Common;
+import org.b3log.solo.model.Option;
 import org.b3log.solo.service.DataModelService;
+import org.b3log.solo.service.OptionQueryService;
 import org.b3log.solo.service.PreferenceQueryService;
 import org.b3log.solo.service.UserQueryService;
 import org.b3log.solo.util.Solos;
@@ -67,6 +69,12 @@ public class ErrorProcessor {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * User query service.
      */
     @Inject
@@ -99,8 +107,9 @@ public class ErrorProcessor {
             try {
                 final Map<String, String> langs = langPropsService.getAll(Locales.getLocale(request));
                 dataModel.putAll(langs);
-                final JSONObject preference = preferenceQueryService.getPreference();
+                final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
                 dataModelService.fillCommon(context, dataModel, preference);
+                dataModelService.fillFaviconURL(dataModel, preference);
                 dataModel.put(Common.LOGIN_URL, userQueryService.getLoginURL(Common.ADMIN_INDEX_URI));
             } catch (final Exception e) {
                 LOGGER.log(Level.ERROR, e.getMessage(), e);

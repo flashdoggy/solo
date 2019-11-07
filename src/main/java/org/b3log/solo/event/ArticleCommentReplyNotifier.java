@@ -23,6 +23,7 @@ import org.b3log.latke.Latkes;
 import org.b3log.latke.event.AbstractEventListener;
 import org.b3log.latke.event.Event;
 import org.b3log.latke.ioc.BeanManager;
+import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.ioc.Singleton;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
@@ -33,6 +34,7 @@ import org.b3log.solo.model.Article;
 import org.b3log.solo.model.Comment;
 import org.b3log.solo.model.Option;
 import org.b3log.solo.repository.CommentRepository;
+import org.b3log.solo.service.OptionQueryService;
 import org.b3log.solo.service.PreferenceQueryService;
 import org.b3log.solo.util.Solos;
 import org.json.JSONObject;
@@ -57,6 +59,12 @@ public class ArticleCommentReplyNotifier extends AbstractEventListener<JSONObjec
      * Mail service.
      */
     private MailService mailService = MailServiceFactory.getMailService();
+
+    /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
 
     @Override
     public void action(final Event<JSONObject> event) {
@@ -100,7 +108,7 @@ public class ArticleCommentReplyNotifier extends AbstractEventListener<JSONObjec
                 return;
             }
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             if (null == preference) {
                 throw new Exception("Not found preference");
             }

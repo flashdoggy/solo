@@ -31,6 +31,23 @@ import org.b3log.solo.util.Skins;
  */
 public final class ConsoleRenderer extends AbstractFreeMarkerRenderer {
 
+    /**
+     * HTTP servlet request context.
+     */
+    private final RequestContext context;
+
+    /**
+     * Constructs a skin renderer with the specified request context and template name.
+     *
+     * @param context      the specified request context
+     * @param templateName the specified template name
+     */
+    public ConsoleRenderer(final RequestContext context, final String templateName) {
+        this.context = context;
+        this.context.setRenderer(this);
+        setTemplateName("admin/" + templateName);
+    }
+
     @Override
     protected Template getTemplate() {
         return Skins.getTemplate(getTemplateName());

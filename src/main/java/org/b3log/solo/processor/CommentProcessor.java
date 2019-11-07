@@ -30,10 +30,7 @@ import org.b3log.latke.servlet.annotation.RequestProcessing;
 import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.latke.servlet.renderer.JsonRenderer;
 import org.b3log.solo.model.*;
-import org.b3log.solo.service.CommentMgmtService;
-import org.b3log.solo.service.PreferenceQueryService;
-import org.b3log.solo.service.UserMgmtService;
-import org.b3log.solo.service.UserQueryService;
+import org.b3log.solo.service.*;
 import org.b3log.solo.util.Emotions;
 import org.b3log.solo.util.Skins;
 import org.b3log.solo.util.Solos;
@@ -88,6 +85,12 @@ public class CommentProcessor {
      */
     @Inject
     private PreferenceQueryService preferenceQueryService;
+
+    /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
 
     /**
      * Adds a comment to a page.
@@ -164,7 +167,7 @@ public class CommentProcessor {
             try {
                 final String skinDirName = (String) context.attr(Keys.TEMAPLTE_DIR_NAME);
                 final Template template = Skins.getSkinTemplate(context, "common-comment.ftl");
-                final JSONObject preference = preferenceQueryService.getPreference();
+                final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
                 Skins.fillLangs(preference.optString(Option.ID_C_LOCALE_STRING), skinDirName, dataModel);
                 Keys.fillServer(dataModel);
                 final StringWriter stringWriter = new StringWriter();
@@ -264,7 +267,7 @@ public class CommentProcessor {
             try {
                 final String skinDirName = (String) context.attr(Keys.TEMAPLTE_DIR_NAME);
                 final Template template = Skins.getSkinTemplate(context, "common-comment.ftl");
-                final JSONObject preference = preferenceQueryService.getPreference();
+                final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
                 Skins.fillLangs(preference.optString(Option.ID_C_LOCALE_STRING), skinDirName, dataModel);
                 Keys.fillServer(dataModel);
                 final StringWriter stringWriter = new StringWriter();

@@ -195,7 +195,7 @@ public class OAuthGitHubProcessor {
                     user = userQueryService.getUserByEmailOrUserName(userEmail);
                 }
                 if (null == user) {
-                    final JSONObject preference = preferenceQueryService.getPreference();
+                    final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
                     if (!preference.optBoolean(Option.ID_C_ALLOW_REGISTER)) {
                         context.sendError(HttpServletResponse.SC_FORBIDDEN);
 

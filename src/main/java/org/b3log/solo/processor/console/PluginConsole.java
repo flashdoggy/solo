@@ -152,9 +152,8 @@ public class PluginConsole {
      * @param context the specified http request context
      */
     public void toSetting(final RequestContext context) {
-        final ConsoleRenderer renderer = new ConsoleRenderer();
-        context.setRenderer(renderer);
-        renderer.setTemplateName("admin-plugin-setting.ftl");
+        final String templateName = "admin-plugin-setting.ftl";
+        final ConsoleRenderer renderer = new ConsoleRenderer(context, templateName);
         final Map<String, Object> dataModel = renderer.getDataModel();
 
         try {

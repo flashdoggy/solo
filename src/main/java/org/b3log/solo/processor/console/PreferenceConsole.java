@@ -189,7 +189,7 @@ public class PreferenceConsole {
         context.setRenderer(renderer);
 
         try {
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final JSONArray signs = new JSONArray();
             final JSONArray allSigns = // includes the empty sign(id=0)
                     new JSONArray(preference.getString(Option.ID_C_SIGNS));
@@ -269,7 +269,7 @@ public class PreferenceConsole {
         context.setRenderer(renderer);
 
         try {
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             if (null == preference) {
                 renderer.setJSONObject(new JSONObject().put(Keys.STATUS_CODE, false));
 

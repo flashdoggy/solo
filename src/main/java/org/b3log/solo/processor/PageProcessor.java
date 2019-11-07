@@ -31,10 +31,7 @@ import org.b3log.latke.util.Stopwatchs;
 import org.b3log.solo.model.Common;
 import org.b3log.solo.model.Option;
 import org.b3log.solo.model.Page;
-import org.b3log.solo.service.CommentQueryService;
-import org.b3log.solo.service.DataModelService;
-import org.b3log.solo.service.PreferenceQueryService;
-import org.b3log.solo.service.StatisticMgmtService;
+import org.b3log.solo.service.*;
 import org.b3log.solo.util.Emotions;
 import org.b3log.solo.util.Markdowns;
 import org.b3log.solo.util.Skins;
@@ -79,6 +76,12 @@ public class PageProcessor {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Comment query service.
      */
     @Inject
@@ -103,7 +106,7 @@ public class PageProcessor {
         final HttpServletResponse response = context.getResponse();
 
         try {
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             if (null == preference) {
                 context.sendError(HttpServletResponse.SC_NOT_FOUND);
 

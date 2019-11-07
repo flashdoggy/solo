@@ -32,6 +32,7 @@ import org.b3log.latke.servlet.annotation.Before;
 import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.latke.servlet.renderer.JsonRenderer;
 import org.b3log.solo.model.Option;
+import org.b3log.solo.service.OptionQueryService;
 import org.b3log.solo.service.PreferenceQueryService;
 import org.b3log.solo.service.UserMgmtService;
 import org.b3log.solo.service.UserQueryService;
@@ -72,6 +73,12 @@ public class UserConsole {
      */
     @Inject
     private PreferenceQueryService preferenceQueryService;
+
+    /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
 
     /**
      * Language service.
@@ -171,7 +178,7 @@ public class UserConsole {
                 // (defaultRole) who could post article
                 requestJSONObject.put(User.USER_ROLE, Role.DEFAULT_ROLE);
             } else {
-                final JSONObject preference = preferenceQueryService.getPreference();
+                final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
                 if (!preference.optBoolean(Option.ID_C_ALLOW_REGISTER)) {
                     ret.put(Keys.STATUS_CODE, false);
                     ret.put(Keys.MSG, langPropsService.get("notAllowRegisterLabel"));

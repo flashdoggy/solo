@@ -30,10 +30,7 @@ import org.b3log.latke.servlet.renderer.JsonRenderer;
 import org.b3log.solo.model.Article;
 import org.b3log.solo.model.Common;
 import org.b3log.solo.model.Option;
-import org.b3log.solo.service.ArticleMgmtService;
-import org.b3log.solo.service.ArticleQueryService;
-import org.b3log.solo.service.PreferenceQueryService;
-import org.b3log.solo.service.UserQueryService;
+import org.b3log.solo.service.*;
 import org.json.JSONObject;
 
 /**
@@ -56,6 +53,12 @@ public class B3ArticleReceiver {
      */
     @Inject
     private PreferenceQueryService preferenceQueryService;
+
+    /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
 
     /**
      * Article management service.
@@ -115,7 +118,7 @@ public class B3ArticleReceiver {
         try {
             final JSONObject article = requestJSONObject.optJSONObject(Article.ARTICLE);
             final String userB3Key = article.optString("userB3Key");
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
 
             if (!userB3Key.equals(preference.optString(Option.ID_C_KEY_OF_SOLO))) {
                 LOGGER.log(Level.WARN, "B3 key not match, ignored add article");
@@ -193,7 +196,7 @@ public class B3ArticleReceiver {
         try {
             final JSONObject article = requestJSONObject.optJSONObject(Article.ARTICLE);
             final String userB3Key = article.optString("userB3Key");
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
 
             if (!userB3Key.equals(preference.optString(Option.ID_C_KEY_OF_SOLO))) {
                 LOGGER.log(Level.WARN, "B3 key not match, ignored update article");

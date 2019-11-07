@@ -37,10 +37,7 @@ import org.b3log.solo.model.Comment;
 import org.b3log.solo.model.Option;
 import org.b3log.solo.repository.ArticleRepository;
 import org.b3log.solo.repository.CommentRepository;
-import org.b3log.solo.service.ArticleMgmtService;
-import org.b3log.solo.service.CommentMgmtService;
-import org.b3log.solo.service.PreferenceQueryService;
-import org.b3log.solo.service.StatisticMgmtService;
+import org.b3log.solo.service.*;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
@@ -80,6 +77,12 @@ public class B3CommentReceiver {
      */
     @Inject
     private PreferenceQueryService preferenceQueryService;
+
+    /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
 
     /**
      * Article management service.
@@ -148,7 +151,7 @@ public class B3CommentReceiver {
         final Transaction transaction = commentRepository.beginTransaction();
         try {
             final JSONObject symphonyCmt = requestJSONObject.optJSONObject(Comment.COMMENT);
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final String keyOfSolo = preference.optString(Option.ID_C_KEY_OF_SOLO);
             final String key = symphonyCmt.optString("userB3Key");
 

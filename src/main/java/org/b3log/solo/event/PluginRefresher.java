@@ -24,8 +24,8 @@ import org.b3log.latke.ioc.Singleton;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.plugin.AbstractPlugin;
-import org.b3log.latke.plugin.PluginManager;
 import org.b3log.latke.repository.Transaction;
+import org.b3log.solo.plugin.PluginManager;
 import org.b3log.solo.repository.PluginRepository;
 import org.b3log.solo.service.PluginMgmtService;
 
@@ -52,6 +52,10 @@ public class PluginRefresher extends AbstractEventListener<List<AbstractPlugin>>
 
         LOGGER.log(Level.DEBUG, "Processing an event [type={0}, data={1}] in listener [className={2}]",
                 event.getType(), plugins, PluginRefresher.class.getName());
+
+        if (plugins.isEmpty()) {
+            return ;
+        }
 
         final BeanManager beanManager = BeanManager.getInstance();
         final PluginRepository pluginRepository = beanManager.getReference(PluginRepository.class);

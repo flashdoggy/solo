@@ -79,6 +79,12 @@ public class CategoryProcessor {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Article query service.
      */
     @Inject
@@ -129,7 +135,7 @@ public class CategoryProcessor {
 
             dataModel.put(Category.CATEGORY, category);
 
-            final JSONObject preference = preferenceQueryService.getPreference();
+            final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
             final int pageSize = preference.getInt(Option.ID_C_ARTICLE_LIST_DISPLAY_COUNT);
             final String categoryId = category.optString(Keys.OBJECT_ID);
 
@@ -151,7 +157,7 @@ public class CategoryProcessor {
             dataModel.put(Common.PATH, "/category/" + URLs.encode(categoryURI));
 
             dataModelService.fillCommon(context, dataModel, preference);
-
+            dataModelService.fillFaviconURL(dataModel, preference);
             statisticMgmtService.incBlogViewCount(context, response);
         } catch (final ServiceException | JSONException e) {
             LOGGER.log(Level.ERROR, e.getMessage(), e);

@@ -23,7 +23,6 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.b3log.latke.Keys;
 import org.b3log.latke.Latkes;
 import org.b3log.latke.event.Event;
-import org.b3log.latke.event.EventManager;
 import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
@@ -39,6 +38,7 @@ import org.b3log.latke.service.annotation.Service;
 import org.b3log.latke.servlet.RequestContext;
 import org.b3log.latke.util.*;
 import org.b3log.solo.SoloServletListener;
+import org.b3log.solo.event.EventManager;
 import org.b3log.solo.model.*;
 import org.b3log.solo.repository.*;
 import org.b3log.solo.util.Emotions;
@@ -550,6 +550,20 @@ public class DataModelService {
     }
 
     /**
+     * Fills favicon URL. 可配置 favicon 图标路径 https://github.com/b3log/solo/issues/12706
+     *
+     * @param dataModel  the specified data model
+     * @param preference the specified preference
+     */
+    public void fillFaviconURL(final Map<String, Object> dataModel, final JSONObject preference) {
+        if (null == preference) {
+            dataModel.put(Common.FAVICON_URL, Option.DefaultPreference.DEFAULT_FAVICON_URL);
+        } else {
+            dataModel.put(Common.FAVICON_URL, preference.optString(Option.ID_C_FAVICON_URL));
+        }
+    }
+
+    /**
      * Fills common parts (header, side and footer).
      *
      * @param context    the specified HTTP servlet request context
@@ -595,6 +609,10 @@ public class DataModelService {
             throws ServiceException {
         Stopwatchs.start("Fill Footer");
         try {
+            if (null == preference) {
+                LOGGER.warn("Fill Blog Header Gets Null Preference!!");
+                return ;
+            }
             LOGGER.debug("Filling footer....");
             final String blogTitle = preference.getString(Option.ID_C_BLOG_TITLE);
             dataModel.put(Option.ID_C_BLOG_TITLE, blogTitle);
@@ -656,6 +674,10 @@ public class DataModelService {
             throws ServiceException {
         Stopwatchs.start("Fill Header");
         try {
+            if (null == preference) {
+                LOGGER.warn("Fill Blog Header Gets Null Preference!!");
+                return ;
+            }
             LOGGER.debug("Filling header....");
             final String topBarHTML = getTopBarHTML(context);
             dataModel.put(Common.LOGIN_URL, userQueryService.getLoginURL(Common.ADMIN_INDEX_URI));
@@ -690,6 +712,7 @@ public class DataModelService {
             dataModel.put(Common.ADMIN_USER, admin);
             final String skinDirName = (String) context.attr(Keys.TEMAPLTE_DIR_NAME);
             dataModel.put(Skin.SKIN_DIR_NAME, skinDirName);
+            dataModel.put(Skin.SKIN, skinDirName);
             Keys.fillRuntime(dataModel);
             fillMinified(dataModel);
             fillPageNavigations(dataModel);
@@ -1001,7 +1024,7 @@ public class DataModelService {
         Stopwatchs.start("Gens Top Bar HTML");
 
         try {
-            final Template topBarTemplate = Skins.getTemplate("top-bar.ftl");
+            final Template topBarTemplate = Skins.getTemplate("common-template/top-bar.ftl");
             final StringWriter stringWriter = new StringWriter();
             final Map<String, Object> topBarModel = new HashMap<>();
             final JSONObject currentUser = Solos.getCurrentUser(context.getRequest(), context.getResponse());

@@ -29,7 +29,6 @@ import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Role;
 import org.b3log.latke.model.User;
-import org.b3log.latke.plugin.PluginManager;
 import org.b3log.latke.repository.RepositoryException;
 import org.b3log.latke.repository.Transaction;
 import org.b3log.latke.repository.jdbc.util.Connections;
@@ -42,6 +41,7 @@ import org.b3log.latke.util.Ids;
 import org.b3log.solo.SoloServletListener;
 import org.b3log.solo.model.*;
 import org.b3log.solo.model.Option.DefaultPreference;
+import org.b3log.solo.plugin.PluginManager;
 import org.b3log.solo.repository.*;
 import org.b3log.solo.util.Images;
 import org.b3log.solo.util.Skins;
@@ -612,6 +612,12 @@ public class InitService {
      */
     private void initPreference(final JSONObject requestJSONObject) throws Exception {
         LOGGER.debug("Initializing preference....");
+
+        final JSONObject faviconURLOpt = new JSONObject();
+        faviconURLOpt.put(Keys.OBJECT_ID, Option.ID_C_FAVICON_URL);
+        faviconURLOpt.put(Option.OPTION_CATEGORY, Option.CATEGORY_C_PREFERENCE);
+        faviconURLOpt.put(Option.OPTION_VALUE, DefaultPreference.DEFAULT_FAVICON_URL);
+        optionRepository.add(faviconURLOpt);
 
         final JSONObject customVarsOpt = new JSONObject();
         customVarsOpt.put(Keys.OBJECT_ID, Option.ID_C_CUSTOM_VARS);

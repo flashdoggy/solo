@@ -161,6 +161,12 @@ public class MetaWeblogAPI {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Tag query service.
      */
     @Inject
@@ -439,7 +445,7 @@ public class MetaWeblogAPI {
     private String getUsersBlogs() throws Exception {
         final StringBuilder stringBuilder = new StringBuilder(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value><array><data><value><struct>");
-        final JSONObject preference = preferenceQueryService.getPreference();
+        final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
         final String blogInfo = buildBlogInfo(preference);
         stringBuilder.append(blogInfo);
         stringBuilder.append("</struct></value></data></array></value></param></params></methodResponse>");

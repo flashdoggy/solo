@@ -84,6 +84,12 @@ public class PageMgmtService {
     private PreferenceQueryService preferenceQueryService;
 
     /**
+     * Options query service.
+     */
+    @Inject
+    private OptionQueryService optionQueryService;
+
+    /**
      * Statistic management service.
      */
     @Inject
@@ -169,7 +175,7 @@ public class PageMgmtService {
 
             // Set editor type
             if (!newPage.has(Page.PAGE_EDITOR_TYPE)) {
-                final JSONObject preference = preferenceQueryService.getPreference();
+                final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
                 newPage.put(Page.PAGE_EDITOR_TYPE, preference.optString(Option.ID_C_EDITOR_TYPE));
             }
 
@@ -276,7 +282,7 @@ public class PageMgmtService {
 
             // Set editor type
             if (!page.has(Page.PAGE_EDITOR_TYPE)) {
-                final JSONObject preference = preferenceQueryService.getPreference();
+                final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
                 page.put(Page.PAGE_EDITOR_TYPE, preference.optString(Option.ID_C_EDITOR_TYPE));
             }
 

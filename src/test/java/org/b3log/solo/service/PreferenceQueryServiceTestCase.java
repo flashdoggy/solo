@@ -49,8 +49,8 @@ public class PreferenceQueryServiceTestCase extends AbstractTestCase {
      */
     @Test(dependsOnMethods = "init")
     public void getPreference() throws Exception {
-        final PreferenceQueryService preferenceQueryService = getPreferenceQueryService();
-        final JSONObject preference = preferenceQueryService.getPreference();
+        final OptionQueryService optionQueryService = getOptionQueryService();
+        final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
 
         Assert.assertEquals(preference.getString(Option.ID_C_BLOG_TITLE), "Admin 的个人博客");
     }
