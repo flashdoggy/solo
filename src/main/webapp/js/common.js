@@ -103,6 +103,15 @@ var Util = {
    * @returns {undefined}
    */
   parseMarkdown: function (className) {
+
+    if (typeof Vditor === 'undefined') {
+      Util.addScript(
+          'https://cdn.jsdelivr.net/npm/vditor@1.8.13/dist/method.min.js',
+          'vditorPreviewScript')
+    }
+
+    Vditor.codeRender(document.body, Label.langLabel);
+
     var hasMathJax = false;
     var hasFlow = false;
     var className = className || 'article-body';

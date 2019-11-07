@@ -426,6 +426,11 @@ public final class Option {
         public static final String DEFAULT_FAVICON_URL = "https://static.b3log.org/images/brand/solo-32.png";
 
         /**
+         * Key of Lute engine available.
+         */
+        public static final String LUTE_AVAILABLE = "luteAvailable";
+
+        /**
          * Default recent article display count.
          */
         public static final int DEFAULT_RECENT_ARTICLE_DISPLAY_COUNT = 10;

@@ -19,12 +19,12 @@
 -->
 <#include "../common-template/label.ftl"/>
 <script type="text/javascript">
-    Label.setMobileLabel = '${setMobileLabel}'
-    Label.pushSuccLabel = '${pushSuccLabel}'
-    Label.pushToHacpaiLabel = '${pushToHacpaiLabel}'
-    Label.uploadMsg = '${uploadMsg}'
-    Label.uploadToken = "${uploadToken}"
-    Label.uploadURL = "${uploadURL}"
+    <#--Label.setMobileLabel = '${setMobileLabel}'-->
+    <#--Label.pushSuccLabel = '${pushSuccLabel}'-->
+    <#--Label.pushToHacpaiLabel = '${pushToHacpaiLabel}'-->
+    <#--Label.uploadMsg = '${uploadMsg}'-->
+    <#--Label.uploadToken = "${uploadToken}"-->
+    <#--Label.uploadURL = "${uploadURL}"-->
     Label.skinDirName = "${skinDirName}"
     Label.userRole = "${userRole}"
     Label.PAGE_SIZE = "${articleListDisplayCount}"
