@@ -131,12 +131,9 @@ public class AdminConsole {
      * @param context the specified context
      */
     public void showAdminIndex(final RequestContext context) {
-//        final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer();
-//        context.setRenderer(renderer);
         final String templateName = "admin-index.ftl";
         final AbstractFreeMarkerRenderer renderer = new ConsoleRenderer(context, templateName);
 
-//        renderer.setTemplateName(templateName);
         final Map<String, String> langs = langPropsService.getAll(Latkes.getLocale());
         final Map<String, Object> dataModel = renderer.getDataModel();
         dataModel.putAll(langs);
@@ -156,7 +153,6 @@ public class AdminConsole {
 
         try {
             final JSONObject preference = optionQueryService.getOptions(Option.CATEGORY_C_PREFERENCE);
-            dataModel.put(Option.ID_C_LOCALE_STRING, preference.getString(Option.ID_C_LOCALE_STRING));
             dataModel.put(Option.ID_C_BLOG_TITLE, preference.getString(Option.ID_C_BLOG_TITLE));
             dataModel.put(Option.ID_C_BLOG_SUBTITLE, preference.getString(Option.ID_C_BLOG_SUBTITLE));
             dataModel.put(Common.VERSION, SoloServletListener.VERSION);
@@ -169,8 +165,8 @@ public class AdminConsole {
             dataModel.put("skin", skin.optString(Option.ID_C_SKIN_DIR_NAME));
             dataModel.put(Skin.SKIN_DIR_NAME, skin.optString(Option.ID_C_SKIN_DIR_NAME));
             // 使用 Marked 时代码高亮问题 https://github.com/b3log/solo/issues/12614
-            dataModel.put(Common.MARKED_AVAILABLE, Markdowns.MARKED_AVAILABLE);
             Keys.fillRuntime(dataModel);
+            dataModel.put(Common.MARKED_AVAILABLE, Markdowns.MARKED_AVAILABLE);
             dataModelService.fillMinified(dataModel);
             dataModelService.fillFaviconURL(dataModel, preference);
             dataModelService.fillCommon(context, dataModel, preference);

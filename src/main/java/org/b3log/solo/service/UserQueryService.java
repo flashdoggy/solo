@@ -217,6 +217,19 @@ public class UserQueryService {
     }
 
     /**
+     * Gets the URL of login with A&P
+     *
+     * @param redirectURL redirect URL after logged in
+     * @return login URL
+     */
+    public String getNormalLoginURL(final String redirectURL) {
+        String to = Latkes.getServePath();
+        to = URLs.encode(to + redirectURL);
+
+        return Latkes.getContextPath() + "/normalLogin?goto=" + to;
+    }
+
+    /**
      * Sets the user management service with the specified user management service.
      *
      * @param userMgmtService the specified user management service

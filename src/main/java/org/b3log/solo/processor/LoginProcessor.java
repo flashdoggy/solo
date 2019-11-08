@@ -148,6 +148,8 @@ public class LoginProcessor {
         final String userName = context.param("userName");
         final String userPassword = context.param("userPassword");
 
+        String destinationURL = context.param(Common.GOTO);
+
         JSONObject user = userQueryService.getUserByEmailOrUserName(userName);
         if (null == user) {
             return ;
@@ -160,7 +162,7 @@ public class LoginProcessor {
         }
 
         Solos.login(user, response);
-        context.sendRedirect(Latkes.getServePath());
+        context.sendRedirect(destinationURL);
         LOGGER.log(Level.INFO, "Logged in [email={0}, remoteAddr={1}] with GitHub oauth", userName, Requests.getRemoteAddr(request));
 
         return;

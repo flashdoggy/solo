@@ -77,12 +77,13 @@
                 ${allowCommentLabel}
             </label>
             &nbsp;
-            <span id="postToCommunityPanel">
-                <label class="checkbox">
-                    <input id="postToCommunity" type="checkbox" />
-                    <a href="https://hacpai.com/article/1546941897596" target="_blank">${syncToCommunityLabel}</a>
-                </label>
-            </span>
+<#--            There is no need to sync to community from my blog now, maybe add it in the future. -->
+<#--            <span id="postToCommunityPanel">-->
+<#--                <label class="checkbox">-->
+<#--                    <input id="postToCommunity" type="checkbox" />-->
+<#--                    <a href="https://hacpai.com/article/1546941897596" target="_blank">${syncToCommunityLabel}</a>-->
+<#--                </label>-->
+<#--            </span>-->
         </div>
         <div class="fn__clear"></div>
     </div>

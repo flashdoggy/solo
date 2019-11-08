@@ -107,6 +107,14 @@
     <include path="/plugins/**/*.moc"/>
     <include path="/plugins/**/*.mtn"/>
 
+    <include path="/scss/**/*.css"/>
+    <include path="/scss/**/*.scss"/>
+    <include path="/scss/**/*.eot"/>
+    <include path="/scss/**/*.svg"/>
+    <include path="/scss/**/*.ttf"/>
+    <include path="/scss/**/*.woff"/>
+    <include path="/scss/**/*.json"/>
+
     <include path="/CHANGE_LOGS.html"/>
     <include path="/LICENSE.txt"/>
 

@@ -681,6 +681,7 @@ public class DataModelService {
             LOGGER.debug("Filling header....");
             final String topBarHTML = getTopBarHTML(context);
             dataModel.put(Common.LOGIN_URL, userQueryService.getLoginURL(Common.ADMIN_INDEX_URI));
+            dataModel.put(Common.NORMAL_LOGIN_URL, userQueryService.getNormalLoginURL(Common.ADMIN_INDEX_URI));
             dataModel.put(Common.LOGOUT_URL, userQueryService.getLogoutURL());
             dataModel.put(Common.ONLINE_VISITOR_CNT, StatisticQueryService.getOnlineVisitorCount());
             dataModel.put(Common.TOP_BAR, topBarHTML);
@@ -1037,8 +1038,10 @@ public class DataModelService {
             topBarModel.put(Common.ONLINE_VISITOR_CNT, StatisticQueryService.getOnlineVisitorCount());
             if (null == currentUser) {
                 topBarModel.put(Common.LOGIN_URL, userQueryService.getLoginURL(Common.ADMIN_INDEX_URI));
+                topBarModel.put(Common.NORMAL_LOGIN_URL, userQueryService.getNormalLoginURL(Common.ADMIN_INDEX_URI));
                 topBarModel.put("loginLabel", langPropsService.get("loginLabel"));
                 topBarModel.put("registerLabel", langPropsService.get("registerLabel"));
+                topBarModel.put("startToUseLabel", langPropsService.get("startToUseLabel"));
                 topBarTemplate.process(topBarModel, stringWriter);
 
                 return stringWriter.toString();

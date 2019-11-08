@@ -41,7 +41,7 @@ ${loginLabel}
 
             $("#tip").html("<img src='${staticServePath}/images/loading.gif'/> loading...")
             $.ajax({
-                url: "${servePath}" + "/normalLogin",
+                url: "${normalLoginURL}",
                 type: "POST",
                 cache: false,
                 data: requestJSONObject,

@@ -213,6 +213,11 @@ public final class Common {
     public static final String LOGIN_URL = "loginURL";
 
     /**
+     * Key of normalLogin URL.
+     */
+    public static final String NORMAL_LOGIN_URL = "normalLoginURL";
+
+    /**
      * Key of logout URL.
      */
     public static final String LOGOUT_URL = "logoutURL";

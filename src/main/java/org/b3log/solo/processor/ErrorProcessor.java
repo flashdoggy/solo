@@ -111,6 +111,7 @@ public class ErrorProcessor {
                 dataModelService.fillCommon(context, dataModel, preference);
                 dataModelService.fillFaviconURL(dataModel, preference);
                 dataModel.put(Common.LOGIN_URL, userQueryService.getLoginURL(Common.ADMIN_INDEX_URI));
+                dataModel.put(Common.NORMAL_LOGIN_URL, userQueryService.getNormalLoginURL(Common.ADMIN_INDEX_URI));
             } catch (final Exception e) {
                 LOGGER.log(Level.ERROR, e.getMessage(), e);
 
