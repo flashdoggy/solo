@@ -19,6 +19,9 @@ package org.b3log.solo.processor;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.b3log.latke.Keys;
@@ -33,6 +36,7 @@ import org.b3log.latke.servlet.HttpMethod;
 import org.b3log.latke.servlet.RequestContext;
 import org.b3log.latke.servlet.annotation.RequestProcessing;
 import org.b3log.latke.servlet.annotation.RequestProcessor;
+import org.b3log.latke.servlet.renderer.JsonRenderer;
 import org.b3log.latke.util.Requests;
 import org.b3log.latke.util.URLs;
 import org.b3log.solo.model.UserExt;
@@ -239,6 +243,56 @@ public class OAuthProcessor {
         final String redirect = StringUtils.substringBeforeLast(referer, "__");
         Solos.login(user, response);
         context.sendRedirect(redirect);
+        LOGGER.log(Level.INFO, "Logged in [name={0}, remoteAddr={1}] with oauth", userName, Requests.getRemoteAddr(request));
+    }
+
+    /**
+     * @Author KC
+     * @Date 2019/11/9 1:34
+     * @Description Login with u&p
+     * @Param [context]
+     * @Return void
+     * @Since
+     */
+    public void login (final RequestContext context) {
+        final HttpServletResponse response = context.getResponse();
+        final HttpServletRequest request = context.getRequest();
+        final String userName = context.param("username");
+        final String password = context.param("password");
+
+        if (StringUtils.isBlank(password)) {
+            LOGGER.log(Level.WARN, "Password is compulsory for name [" + userName + "]");
+            context.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+
+            return;
+        }
+
+        JSONObject user = userQueryService.getUserByName(userName);
+        if (null == user) {
+            LOGGER.log(Level.WARN, "Can't get user by name [" + userName + "]");
+            context.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+            return;
+        }
+
+        final String hashedPassword = DigestUtils.md5Hex(password);
+
+        if (!hashedPassword.equals(user.optString("userPassword"))) {
+            LOGGER.log(Level.WARN, "Password is not matched for name [" + userName + "]");
+            context.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+
+            return;
+        }
+
+        Solos.login(user, response);
+
+        final JSONObject jsonObject = new JSONObject();
+        final JsonRenderer renderer = new JsonRenderer();
+
+        context.setRenderer(renderer);
+        jsonObject.put(User.USER_NAME, user.optString("userName"));
+        renderer.setJSONObject(jsonObject);
+
         LOGGER.log(Level.INFO, "Logged in [name={0}, remoteAddr={1}] with oauth", userName, Requests.getRemoteAddr(request));
     }
 }

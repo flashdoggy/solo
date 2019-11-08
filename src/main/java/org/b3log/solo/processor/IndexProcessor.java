@@ -99,6 +99,12 @@ public class IndexProcessor {
     private InitService initService;
 
     /**
+     * OAuthProcessor
+     */
+    @Inject
+    private OAuthProcessor oAuthProcessor;
+
+    /**
      * Shows index with the specified context.
      *
      * @param context the specified context
@@ -176,7 +182,9 @@ public class IndexProcessor {
             referer = Latkes.getServePath();
         }
 
-        final AbstractFreeMarkerRenderer renderer = new SkinRenderer(context, "common-template/start.ftl");
+        // Transfer Solo offcial start page from B3log to my own
+//        final AbstractFreeMarkerRenderer renderer = new SkinRenderer(context, "common-template/start.ftl");
+        final AbstractFreeMarkerRenderer renderer = new SkinRenderer(context, "common-template/start-with-account.ftl");
         final Map<String, Object> dataModel = renderer.getDataModel();
         final HttpServletRequest request = context.getRequest();
         final Map<String, String> langs = langPropsService.getAll(Locales.getLocale(request));
@@ -190,6 +198,25 @@ public class IndexProcessor {
         dataModelService.fillFaviconURL(dataModel, optionQueryService.getPreference());
         dataModelService.fillUsite(dataModel);
         Solos.addGoogleNoIndex(context);
+    }
+
+    /**
+     * @Author KC
+     * @Date 2019/11/9 1:02
+     * @Description Login with my own function which using account to login
+     * @Param [context]
+     * @Return void
+     * @Since
+     */
+    @RequestProcessing(value = "/login", method = HttpMethod.POST)
+    public void login(final RequestContext context) {
+        if (initService.isInited() && null != Solos.getCurrentUser(context.getRequest(), context.getResponse())) {
+            context.sendRedirect(Latkes.getServePath());
+
+            return;
+        }
+
+        oAuthProcessor.login(context);
     }
 
     /**

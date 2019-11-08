@@ -368,12 +368,12 @@ public final class Option {
         /**
          * Default skin directory name.
          */
-        public static final String DEFAULT_SKIN_DIR_NAME = "Pinghsu";
+        public static final String DEFAULT_SKIN_DIR_NAME = "next";
 
         /**
          * Default mobile skin directory name.
          */
-        public static final String DEFAULT_MOBILE_SKIN_DIR_NAME = "Pinghsu";
+        public static final String DEFAULT_MOBILE_SKIN_DIR_NAME = "next";
 
         /**
          * Default language.
