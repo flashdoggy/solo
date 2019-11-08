@@ -97,6 +97,17 @@ public class UserRepository extends AbstractRepository {
     }
 
     /**
+     * Gets a user by the specified userEmail.
+     *
+     * @param userEmail the specified userEmail
+     * @return user, returns {@code null} if not found
+     * @throws RepositoryException repository exception
+     */
+    public JSONObject getByUserEmail(final String userEmail) throws RepositoryException {
+        return getFirst(new Query().setFilter(new PropertyFilter(User.USER_EMAIL, FilterOperator.EQUAL, userEmail)));
+    }
+
+    /**
      * Gets the administrator user.
      *
      * @return administrator user, returns {@code null} if not found or error

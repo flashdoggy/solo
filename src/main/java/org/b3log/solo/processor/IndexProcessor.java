@@ -24,6 +24,7 @@ import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
 import org.b3log.latke.model.Pagination;
+import org.b3log.latke.model.User;
 import org.b3log.latke.service.LangPropsService;
 import org.b3log.latke.service.ServiceException;
 import org.b3log.latke.servlet.HttpMethod;
@@ -31,6 +32,7 @@ import org.b3log.latke.servlet.RequestContext;
 import org.b3log.latke.servlet.annotation.RequestProcessing;
 import org.b3log.latke.servlet.annotation.RequestProcessor;
 import org.b3log.latke.servlet.renderer.AbstractFreeMarkerRenderer;
+import org.b3log.latke.servlet.renderer.JsonRenderer;
 import org.b3log.latke.util.Locales;
 import org.b3log.latke.util.Paginator;
 import org.b3log.latke.util.URLs;
@@ -211,7 +213,13 @@ public class IndexProcessor {
     @RequestProcessing(value = "/login", method = HttpMethod.POST)
     public void login(final RequestContext context) {
         if (initService.isInited() && null != Solos.getCurrentUser(context.getRequest(), context.getResponse())) {
-            context.sendRedirect(Latkes.getServePath());
+            final String userName = context.param("username");
+            final JSONObject jsonObject = new JSONObject();
+            final JsonRenderer renderer = new JsonRenderer();
+
+            context.setRenderer(renderer);
+            jsonObject.put(User.USER_NAME, userName);
+            renderer.setJSONObject(jsonObject);
 
             return;
         }

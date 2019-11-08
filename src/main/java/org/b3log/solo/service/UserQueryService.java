@@ -104,7 +104,12 @@ public class UserQueryService {
      */
     public JSONObject getUserByName(final String userName) {
         try {
-            return userRepository.getByUserName(userName);
+            JSONObject user = userRepository.getByUserName(userName);
+
+            if (null == user) {
+                user = userRepository.getByUserEmail(userName);
+            }
+            return user;
         } catch (final RepositoryException e) {
             LOGGER.log(Level.ERROR, "Gets a user by username [" + userName + "] failed", e);
 
