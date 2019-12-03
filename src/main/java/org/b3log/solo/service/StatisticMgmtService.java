@@ -264,8 +264,13 @@ public class StatisticMgmtService {
 
         final String remoteAddr = Requests.getRemoteAddr(request);
         LOGGER.log(Level.DEBUG, "Current request [IP={0}]", remoteAddr);
-        ONLINE_VISITORS.put(remoteAddr, System.currentTimeMillis());
-        LOGGER.log(Level.DEBUG, "Current online visitor count [{0}]", ONLINE_VISITORS.size());
+        if (!remoteAddr.equals("0:0:0:0:0:0:0:1") && !ONLINE_VISITORS.containsKey(remoteAddr)) {
+            ONLINE_VISITORS.put(remoteAddr, System.currentTimeMillis());
+            LOGGER.log(Level.DEBUG, "Current online visitor count [{0}]", ONLINE_VISITORS.size());
+        } else {
+            LOGGER.log(Level.DEBUG, "Current online visitor count removed host address");
+        }
+
     }
 
     /**

@@ -569,6 +569,27 @@ public class DataModelService {
     }
 
     /**
+     * @Author k5068
+     * @Date 2019/12/3 13:04
+     * @Description This is description of method get and fill start page background image
+     * @Param [dataModel]
+     * @Return void
+     * @Since
+     */
+    public void fillStartBackgroundImage(final Map<String, Object> dataModel) {
+        try {
+            final JSONObject startBgImageOpt = optionQueryService.getOptionById(Option.START_A_BACKGROUND_IMAGE);
+            if (null == startBgImageOpt) {
+                return;
+            }
+
+            dataModel.put(Option.START_A_BACKGROUND_IMAGE, startBgImageOpt.optString(Option.OPTION_VALUE));
+        } catch (final Exception e) {
+            LOGGER.log(Level.ERROR, "Fills start background image failed", e);
+        }
+    }
+
+    /**
      * Fills common parts (header, side and footer).
      *
      * @param context    the specified HTTP servlet request context

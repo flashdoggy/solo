@@ -199,6 +199,7 @@ public class IndexProcessor {
         dataModelService.fillMinified(dataModel);
         dataModelService.fillFaviconURL(dataModel, optionQueryService.getPreference());
         dataModelService.fillUsite(dataModel);
+        dataModelService.fillStartBackgroundImage(dataModel);
         Solos.addGoogleNoIndex(context);
     }
 

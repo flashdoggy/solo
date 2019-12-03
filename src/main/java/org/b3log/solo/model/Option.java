@@ -69,6 +69,12 @@ public final class Option {
     public static final String ID_C_PULL_GITHUB = "pullGitHub";
 
     /**
+     *
+     * Key of background image in start page
+     */
+    public static final String START_A_BACKGROUND_IMAGE="startBackgroundImage";
+
+    /**
      * Key of favicon URL.
      */
     public static final String ID_C_FAVICON_URL = "faviconURL";

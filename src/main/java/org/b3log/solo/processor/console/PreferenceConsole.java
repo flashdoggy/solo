@@ -205,6 +205,41 @@ public class PreferenceConsole {
     }
 
     /**
+     * @Author k5068
+     * @Date 2019/12/3 11:36
+     * @Description This is description of method add new preference
+     * @Param [context]
+     * @Return void
+     * @Since
+     */
+    public void addPreference(final RequestContext context) {
+        final JsonRenderer renderer = new JsonRenderer();
+        context.setRenderer(renderer);
+
+        try {
+            final JSONObject requestJSONObject = context.requestJSON();
+            final JSONObject preference = requestJSONObject.getJSONObject(Option.CATEGORY_C_PREFERENCE);
+            final JSONObject ret = new JSONObject();
+            renderer.setJSONObject(ret);
+            if (isInvalid(preference, ret)) {
+                return;
+            }
+
+            preferenceMgmtService.addPreference(preference);
+
+            ret.put(Keys.STATUS_CODE, true);
+            ret.put(Keys.MSG, langPropsService.get("updateSuccLabel"));
+        } catch (final ServiceException e) {
+            LOGGER.log(Level.ERROR, e.getMessage(), e);
+
+            final JSONObject jsonObject = new JSONObject().put(Keys.STATUS_CODE, false);
+            renderer.setJSONObject(jsonObject);
+            jsonObject.put(Keys.MSG, langPropsService.get("updateFailLabel"));
+        }
+
+    }
+
+    /**
      * Updates the preference by the specified request.
      * <p>
      * Request json:

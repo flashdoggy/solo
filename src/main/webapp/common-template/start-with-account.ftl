@@ -20,10 +20,10 @@
 <#include "macro-common_page.ftl">
 
 <@commonPage "${welcomeToSoloLabel}!">
-<h2>
+<h2 class="start-page-h2">
     <span>${welcomeToSoloLabel}</span>
-    <a target="_blank" href="https://solo.b3log.org">
-        <span class="error">&nbsp;Solo</span>
+    <a target="_blank" href="https://taoism-one.com/">
+        <span class="error">&nbsp;${myBlogLabel}</span>
     </a>
 </h2>
 
@@ -31,7 +31,7 @@
     <div id="account">
         <form id="login">
             <input type="text" id="username" />
-            <input type="password" id="password" />
+            <input type="password" id="password" /><br />
             <button type="button" id="login" >${login}</button>
         </form>
     </div>
@@ -57,6 +57,12 @@
                     $("#tip").text(result.msg);
                 }});
         });
+
+        /* css style for start page only */
+        $('.content-wrap').attr("style", "background-image:url(${startBackgroundImage});");
+        $('.start-page-h2').css("background-color","#FFFFFF");
+        $('input').css({"width":"50%"});
+        $('button#login').css("width", "30%");
     });
 </script>
 </@commonPage>

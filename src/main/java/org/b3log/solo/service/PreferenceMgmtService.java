@@ -66,6 +66,24 @@ public class PreferenceMgmtService {
     @Inject
     private LangPropsService langPropsService;
 
+    public void addPreference(final JSONObject preference) throws ServiceException {
+        final Iterator<String> keys = preference.keys();
+        while (keys.hasNext()) {
+            final String key = keys.next();
+            if (preference.isNull(key)) {
+                throw new ServiceException("A value is null of preference [key=" + key + "]");
+            }
+        }
+
+        final Transaction transaction = optionRepository.beginTransaction();
+
+        try {
+            System.out.println(preference);
+        } catch (final Exception e) {
+
+        }
+    }
+
     /**
      * Updates the preference with the specified preference.
      *

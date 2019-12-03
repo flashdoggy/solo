@@ -393,6 +393,7 @@ public final class SoloServletListener extends AbstractServletListener {
         final PreferenceConsole preferenceConsole = beanManager.getReference(PreferenceConsole.class);
         DispatcherServlet.get("/console/signs/", preferenceConsole::getSigns);
         DispatcherServlet.get("/console/preference/", preferenceConsole::getPreference);
+        DispatcherServlet.post("/console/preference", preferenceConsole::addPreference);
         DispatcherServlet.put("/console/preference/", preferenceConsole::updatePreference);
 
         final SkinConsole skinConsole = beanManager.getReference(SkinConsole.class);
