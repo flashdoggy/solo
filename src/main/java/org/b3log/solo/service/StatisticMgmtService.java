@@ -17,6 +17,7 @@
  */
 package org.b3log.solo.service;
 
+import cn.hutool.core.util.StrUtil;
 import org.b3log.latke.ioc.Inject;
 import org.b3log.latke.logging.Level;
 import org.b3log.latke.logging.Logger;
@@ -218,6 +219,11 @@ public class StatisticMgmtService {
     public void incBlogViewCount(final RequestContext context, final HttpServletResponse response) throws ServiceException {
         if (Solos.isBot(context.getRequest())) {
             return;
+        }
+
+        // if localhost then no add;
+        if (StrUtil.equals(context.getRequest().getServerName(), "localhost")) {
+            return ;
         }
 
         if (hasBeenServed(context, response)) {
