@@ -276,10 +276,21 @@ var Util = {
    * 调试区域文案
    */
   initDebugInfo: function () {
+    // var _log = console.log;
+    // console.log = function () {
+    //   // _log.call(console, '%c' + [].slice.call(arguments).join(" "), '', 'font-size:24px;color:#6F9CE8', 'font-size:12px;color:rgba(0,0,0,0.38)');
+    // };
     console.log(
-      '%cSolo%c\n  🎸一款小而美的博客系统，专为程序员设计。' + Label.version + ' © ' +
-      (new Date).getFullYear(),
-      'font-size:96px;color:#3b3e43', 'font-size:12px;color:rgba(0,0,0,0.38);')
+        '%cWelcome!%c\n' +
+        '(Finally you find here！🎉)\n' +
+        'My name is KevinCheng⛎, feel free to just call me Kevin❤.\n' +
+        "I'm a Chinese software developer, hoping know more friends from different any where😁.\n" +
+        "My github link: https://github.com/taoism-o 🆙.\n" +
+        '🎸Blog engine powered by Solo' + Label.version + ' © ' +
+        (new Date()).getFullYear() + " from B3log🆒" +
+        "\nGithub link: https://github.com/88250/solo ."
+        , 'font-size:96px;color:#3b3e43', 'font-size:12px;color:rgba(111,156,232,91.38);'
+    );
   },
   /**
    * @description 注册 Service Work
